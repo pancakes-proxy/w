@@ -37,7 +37,14 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; ^
 iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))"
 
-:: Refresh environment variables (optional: might need a restart)
+:: Restart terminal before choco installs to update PATH
+if "%RESTARTED%"=="" (
+    set RESTARTED=1
+    echo Restarting terminal to install the rest of the apps.
+    start "" "%ComSpec%" /k ""%~f0""
+    exit /b
+)
+
 echo Installing winfetch
 choco install winfetch -y
 echo Installing 7zip
@@ -46,7 +53,6 @@ echo Installing Notepad++
 choco install notepadplusplus -y
 echo Installing VLC
 choco install vlc -y
-
 
 echo All done!
 pause
